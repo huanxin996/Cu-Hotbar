@@ -19,16 +19,24 @@ namespace CasualtiesUnknown.Hotbar
                     ModLog.Warning("SaveManager 无 ExternalTabRegistry 扩展点，回退独立模式");
                     return false;
                 }
-                var register = AccessTools.Method(type, "Register", new[] { typeof(string), typeof(Action) });
-                if (register == null)
-                {
-                    ModLog.Warning("ExternalTabRegistry.Register 未找到，回退独立模式");
-                    return false;
-                }
                 var content = new HotbarSettingsContent(cfg);
                 Action draw = content.Draw;
-                register.Invoke(null, new object[] { HotbarI18n.T("tab.title"), draw });
-                return true;
+
+                var registerFn = AccessTools.Method(type, "Register", new[] { typeof(Func<string>), typeof(Action) });
+                if (registerFn != null)
+                {
+                    Func<string> title = () => HotbarI18n.T("tab.title");
+                    registerFn.Invoke(null, new object[] { title, draw });
+                    return true;
+                }
+                var registerStr = AccessTools.Method(type, "Register", new[] { typeof(string), typeof(Action) });
+                if (registerStr != null)
+                {
+                    registerStr.Invoke(null, new object[] { HotbarI18n.T("tab.title"), draw });
+                    return true;
+                }
+                ModLog.Warning("ExternalTabRegistry.Register 未找到，回退独立模式");
+                return false;
             }
             catch (Exception ex)
             {
