@@ -30,8 +30,23 @@ namespace CasualtiesUnknown.Hotbar
             _model.RefillActiveIfNeeded();
             _model.Refresh();
             HandleKeys();
+            HandleUseItem();
             HandleScroll();
             _view.Tick();
+        }
+
+        private void HandleUseItem()
+        {
+            if (!_cfg.UseItemHotkey.Value.IsDown()) return;
+            if (_view.TryGetSlotIndexAt(Input.mousePosition, out _)) return;
+            var cam = PlayerCamera.main;
+            var body = cam != null ? cam.body : null;
+            if (body == null || !body.conscious || !body.allowUseItem) return;
+            var held = body.GetItem(body.handSlot);
+            if (held != null && held.Stats != null && held.Stats.usable)
+            {
+                body.UseItem(held);
+            }
         }
 
         private void HandleScroll()
@@ -66,7 +81,7 @@ namespace CasualtiesUnknown.Hotbar
         {
             for (int i = 0; i < _model.SlotCount; i++)
             {
-                if (Input.GetKeyDown(_cfg.SlotKey(i)))
+                if (_cfg.SlotHotkey(i).Value.IsDown())
                 {
                     if (_model.Activate(i)) _view.Selected = i;
                     return;

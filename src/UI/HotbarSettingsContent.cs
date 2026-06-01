@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using BepInEx.Configuration;
 using UnityEngine;
 
@@ -13,15 +14,22 @@ namespace CasualtiesUnknown.Hotbar
         private const float LabelW = 220f;
         private const float RowH = 40f;
 
+        private static readonly KeyCode[] ModifierKeys =
+        {
+            KeyCode.LeftShift, KeyCode.RightShift,
+            KeyCode.LeftControl, KeyCode.RightControl,
+            KeyCode.LeftAlt, KeyCode.RightAlt,
+        };
+
         private readonly HotbarConfig _cfg;
-        private bool _capturingPanelKey;
+        private ConfigEntry<KeyboardShortcut> _capturing;
 
         internal HotbarSettingsContent(HotbarConfig cfg)
         {
             _cfg = cfg;
         }
 
-        internal void CancelKeyCapture() => _capturingPanelKey = false;
+        internal void CancelKeyCapture() => _capturing = null;
 
         internal void Draw()
         {
@@ -33,7 +41,8 @@ namespace CasualtiesUnknown.Hotbar
             GUILayout.BeginVertical(BlackWhiteSkin.CardStyle);
             bool vis = DrawSwitch(HotbarI18n.T("sw.visible"), _cfg.Visible.Value);
             if (vis != _cfg.Visible.Value) _cfg.Visible.Value = vis;
-            DrawIntSlider(HotbarI18n.F("fmt.slot_count", _cfg.SlotCount.Value), _cfg.SlotCount, 1, 9);
+            DrawIntStepper(HotbarI18n.F("fmt.slot_count", _cfg.SlotCount.Value), _cfg.SlotCount, 1);
+            DrawIntStepper(HotbarI18n.F("fmt.row_count", _cfg.RowCount.Value), _cfg.RowCount, 1);
             DrawFloatSlider(HotbarI18n.F("fmt.scale", _cfg.Scale.Value), _cfg.Scale, 0.5f, 2f);
             DrawFloatSlider(HotbarI18n.F("fmt.bg_alpha", _cfg.BackgroundAlpha.Value), _cfg.BackgroundAlpha, 0f, 1f);
             GUILayout.EndVertical();
@@ -41,9 +50,12 @@ namespace CasualtiesUnknown.Hotbar
             GUILayout.Space(12f);
             GUILayout.Label(HotbarI18n.T("sec.keys"), BlackWhiteSkin.HeaderStyle);
             GUILayout.BeginVertical(BlackWhiteSkin.CardStyle);
-            DrawKeyBase();
-            bool rc = DrawSwitch(HotbarI18n.T("sw.right_click_use"), _cfg.RightClickUse.Value);
-            if (rc != _cfg.RightClickUse.Value) _cfg.RightClickUse.Value = rc;
+            int count = Mathf.Max(_cfg.SlotCount.Value, 1);
+            for (int i = 0; i < count; i++)
+            {
+                DrawHotkeyRow(HotbarI18n.F("fmt.slot_hotkey", i + 1), _cfg.SlotHotkey(i));
+            }
+            DrawHotkeyRow(HotbarI18n.T("lbl.use_item"), _cfg.UseItemHotkey);
             bool sc = DrawSwitch(HotbarI18n.T("sw.enable_scroll"), _cfg.EnableScroll.Value);
             if (sc != _cfg.EnableScroll.Value) _cfg.EnableScroll.Value = sc;
             bool ar = DrawSwitch(HotbarI18n.T("sw.auto_refill"), _cfg.AutoRefill.Value);
@@ -69,8 +81,7 @@ namespace CasualtiesUnknown.Hotbar
             GUILayout.Space(12f);
             GUILayout.Label(HotbarI18n.T("sec.hotkeys"), BlackWhiteSkin.HeaderStyle);
             GUILayout.BeginVertical(BlackWhiteSkin.CardStyle);
-            DrawHotkeyRow(HotbarI18n.T("lbl.hotkey_panel"), _cfg.ToggleSettingsHotkey, ref _capturingPanelKey);
-            CaptureKeyDownIfNeeded();
+            DrawHotkeyRow(HotbarI18n.T("lbl.hotkey_panel"), _cfg.ToggleSettingsHotkey);
             GUILayout.EndVertical();
 
             GUILayout.Space(12f);
@@ -89,63 +100,72 @@ namespace CasualtiesUnknown.Hotbar
                 UpdateChecker.Enabled = upd;
             }
             GUILayout.EndVertical();
+
+            CaptureIfNeeded();
         }
 
-        private void DrawKeyBase()
+        private void DrawHotkeyRow(string label, ConfigEntry<KeyboardShortcut> entry)
         {
-            bool keypad = _cfg.UseKeypad.Value;
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(HotbarI18n.T("lbl.key_base"), BlackWhiteSkin.RowLabelStyle,
-                GUILayout.MinWidth(LabelW), GUILayout.ExpandWidth(false), GUILayout.MinHeight(RowH));
-            if (GUILayout.Button(HotbarI18n.T("opt.keypad"),
-                keypad ? BlackWhiteSkin.TabActiveStyle : BlackWhiteSkin.TabStyle,
-                GUILayout.MinWidth(160f), GUILayout.MinHeight(RowH)))
-            {
-                _cfg.UseKeypad.Value = true;
-            }
-            GUILayout.Space(8f);
-            if (GUILayout.Button(HotbarI18n.T("opt.alpha"),
-                keypad ? BlackWhiteSkin.TabStyle : BlackWhiteSkin.TabActiveStyle,
-                GUILayout.MinWidth(160f), GUILayout.MinHeight(RowH)))
-            {
-                _cfg.UseKeypad.Value = false;
-            }
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-            if (!keypad) GUILayout.Label(HotbarI18n.T("hint.alpha_conflict"));
-        }
-
-        private void DrawHotkeyRow(string label, ConfigEntry<KeyboardShortcut> entry, ref bool capturing)
-        {
+            bool capturing = ReferenceEquals(_capturing, entry);
             GUILayout.BeginHorizontal();
             GUILayout.Label(label, BlackWhiteSkin.RowLabelStyle, GUILayout.MinWidth(LabelW), GUILayout.ExpandWidth(false), GUILayout.MinHeight(RowH));
             string shown = capturing
                 ? HotbarI18n.T("btn.press_a_key")
-                : (entry.Value.MainKey == KeyCode.None ? HotbarI18n.T("btn.unbound") : entry.Value.MainKey.ToString());
+                : (entry.Value.MainKey == KeyCode.None ? HotbarI18n.T("btn.unbound") : entry.Value.ToString());
             if (GUILayout.Button(shown, GUILayout.MinWidth(200f), GUILayout.MinHeight(RowH)))
             {
-                capturing = !capturing;
+                _capturing = capturing ? null : entry;
             }
             GUILayout.Space(8f);
             if (GUILayout.Button(HotbarI18n.T("btn.clear"), GUILayout.MinWidth(100f), GUILayout.MinHeight(RowH)))
             {
                 entry.Value = new KeyboardShortcut(KeyCode.None);
-                capturing = false;
+                if (capturing) _capturing = null;
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
 
-        private void CaptureKeyDownIfNeeded()
+        private void CaptureIfNeeded()
         {
-            if (!_capturingPanelKey) return;
+            if (_capturing == null) return;
             var e = Event.current;
-            if (e != null && e.isKey && e.keyCode != KeyCode.None)
+            if (e == null) return;
+
+            KeyCode main = KeyCode.None;
+            if (e.type == EventType.KeyDown && e.keyCode != KeyCode.None && !IsModifier(e.keyCode))
             {
-                _cfg.ToggleSettingsHotkey.Value = new KeyboardShortcut(e.keyCode);
-                _capturingPanelKey = false;
-                e.Use();
+                if (e.keyCode == KeyCode.Escape) { _capturing = null; e.Use(); return; }
+                main = e.keyCode;
             }
+            else if (e.type == EventType.MouseDown)
+            {
+                main = KeyCode.Mouse0 + e.button;
+            }
+            if (main == KeyCode.None) return;
+
+            _capturing.Value = new KeyboardShortcut(main, CollectModifiers());
+            _capturing = null;
+            e.Use();
+        }
+
+        private static KeyCode[] CollectModifiers()
+        {
+            var mods = new List<KeyCode>(ModifierKeys.Length);
+            for (int i = 0; i < ModifierKeys.Length; i++)
+            {
+                if (Input.GetKey(ModifierKeys[i])) mods.Add(ModifierKeys[i]);
+            }
+            return mods.ToArray();
+        }
+
+        private static bool IsModifier(KeyCode key)
+        {
+            for (int i = 0; i < ModifierKeys.Length; i++)
+            {
+                if (ModifierKeys[i] == key) return true;
+            }
+            return false;
         }
 
         private static bool DrawSwitch(string label, bool value)
@@ -172,14 +192,20 @@ namespace CasualtiesUnknown.Hotbar
             return result;
         }
 
-        private static void DrawIntSlider(string label, ConfigEntry<int> entry, int min, int max)
+        private static void DrawIntStepper(string label, ConfigEntry<int> entry, int min)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(label, BlackWhiteSkin.RowLabelStyle, GUILayout.MinWidth(LabelW), GUILayout.ExpandWidth(false), GUILayout.MinHeight(RowH));
-            float v = GUILayout.HorizontalSlider(entry.Value, min, max,
-                GUILayout.MinWidth(280f), GUILayout.ExpandWidth(true));
-            int iv = Mathf.RoundToInt(v);
-            if (iv != entry.Value) entry.Value = iv;
+            GUILayout.Space(20f);
+            if (GUILayout.Button("-", GUILayout.MinWidth(60f), GUILayout.MinHeight(RowH)))
+            {
+                if (entry.Value > min) entry.Value = entry.Value - 1;
+            }
+            GUILayout.Space(8f);
+            if (GUILayout.Button("+", GUILayout.MinWidth(60f), GUILayout.MinHeight(RowH)))
+            {
+                entry.Value = entry.Value + 1;
+            }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }

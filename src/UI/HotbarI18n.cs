@@ -14,14 +14,12 @@ namespace CasualtiesUnknown.Hotbar
             ["sec.display"] = "显示",
             ["sw.visible"] = "显示快捷栏",
             ["fmt.slot_count"] = "槽位数量：{0}",
+            ["fmt.row_count"] = "排数：{0}",
             ["fmt.scale"] = "缩放：{0:0.00}",
             ["fmt.bg_alpha"] = "背景透明度：{0:0.00}",
             ["sec.keys"] = "切换按键",
-            ["lbl.key_base"] = "数字键基准：",
-            ["opt.keypad"] = "小键盘 1-9",
-            ["opt.alpha"] = "主键盘 1-9",
-            ["hint.alpha_conflict"] = "主键盘 1-3 与游戏倍速键冲突，建议用小键盘。",
-            ["sw.right_click_use"] = "右键使用主手物品",
+            ["fmt.slot_hotkey"] = "切换到槽位 {0}：",
+            ["lbl.use_item"] = "使用主手物品：",
             ["sw.enable_scroll"] = "滚轮切换选中槽",
             ["sw.auto_refill"] = "同种物品用尽前自动补充",
             ["sec.position"] = "位置",
@@ -41,7 +39,7 @@ namespace CasualtiesUnknown.Hotbar
             ["update.available"] = "CuHotbar 有新版本：{0}（点击打开 release 页）",
             ["sw.on"] = "开",
             ["sw.off"] = "关",
-            ["hint.usage"] = "从背包拖物品到槽位绑定；按数字键切到主手；从槽位拖出可使用。",
+            ["hint.usage"] = "从背包拖物品到槽位绑定；按切换键切到主手；右键（默认 Shift+右键）使用。",
         };
 
         private static readonly Dictionary<string, string> _en = new Dictionary<string, string>
@@ -52,14 +50,12 @@ namespace CasualtiesUnknown.Hotbar
             ["sec.display"] = "Display",
             ["sw.visible"] = "Show hotbar",
             ["fmt.slot_count"] = "Slot count: {0}",
+            ["fmt.row_count"] = "Rows: {0}",
             ["fmt.scale"] = "Scale: {0:0.00}",
             ["fmt.bg_alpha"] = "Background alpha: {0:0.00}",
             ["sec.keys"] = "Switch keys",
-            ["lbl.key_base"] = "Number key base:",
-            ["opt.keypad"] = "Keypad 1-9",
-            ["opt.alpha"] = "Alpha 1-9",
-            ["hint.alpha_conflict"] = "Alpha 1-3 conflict with game speed keys; keypad recommended.",
-            ["sw.right_click_use"] = "Right-click to use held item",
+            ["fmt.slot_hotkey"] = "Switch to slot {0}:",
+            ["lbl.use_item"] = "Use held item:",
             ["sw.enable_scroll"] = "Scroll wheel switches slot",
             ["sw.auto_refill"] = "Auto-refill slot while stock remains",
             ["sec.position"] = "Position",
@@ -79,7 +75,7 @@ namespace CasualtiesUnknown.Hotbar
             ["update.available"] = "CuHotbar update available: {0} (click to open release page)",
             ["sw.on"] = "ON",
             ["sw.off"] = "OFF",
-            ["hint.usage"] = "Drag an item onto a slot to bind; press number key to hold; drag out to use.",
+            ["hint.usage"] = "Drag an item onto a slot to bind; press its key to hold; use with the use-key (default Shift+RightClick).",
         };
 
         private static Dictionary<string, string> Current

@@ -241,7 +241,7 @@ namespace CasualtiesUnknown.Hotbar
 
         private void Resize(int count)
         {
-            count = Mathf.Clamp(count, 1, 9);
+            count = Mathf.Max(count, 1);
             var newItems = new Item[count];
             var newIds = new string[count];
             for (int i = 0; i < count; i++)

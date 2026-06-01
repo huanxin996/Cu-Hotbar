@@ -153,16 +153,16 @@ namespace CasualtiesUnknown.Hotbar
             kRect.anchorMax = new Vector2(0f, 1f);
             kRect.pivot = new Vector2(0f, 1f);
             kRect.anchoredPosition = new Vector2(3f, -2f);
-            kRect.sizeDelta = new Vector2(24f, 18f);
+            kRect.sizeDelta = new Vector2(48f, 18f);
             key.color = new Color(1f, 1f, 1f, 0.8f);
-            key.text = (index + 1).ToString();
+            key.text = KeyLabel(index);
 
             var selFrame = BuildSelFrame(rect);
 
             return new Slot
             {
                 Rect = rect, Bg = bg, Border = border, Icon = icon,
-                Status = statusBar, Count = count, SelFrame = selFrame,
+                Status = statusBar, Count = count, Key = key, SelFrame = selFrame,
             };
         }
 
@@ -197,17 +197,29 @@ namespace CasualtiesUnknown.Hotbar
             float scale = _cfg.Scale.Value;
             _root.localScale = new Vector3(scale, scale, 1f);
 
-            float totalW = n * SlotSize + (n - 1) * SlotGap;
+            int rows = Mathf.Clamp(_cfg.RowCount.Value, 1, Mathf.Max(1, n));
+            int cols = Mathf.CeilToInt((float)n / rows);
+
+            float fullW = cols * SlotSize + (cols - 1) * SlotGap;
+            float totalH = rows * SlotSize + (rows - 1) * SlotGap;
+
             _root.anchorMin = _root.anchorMax = new Vector2(_cfg.AnchorX.Value, _cfg.AnchorY.Value);
             _root.pivot = new Vector2(0.5f, 0.5f);
             _root.anchoredPosition = new Vector2(_cfg.OffsetX.Value, _cfg.OffsetY.Value);
-            _root.sizeDelta = new Vector2(totalW, SlotSize);
+            _root.sizeDelta = new Vector2(fullW, totalH);
 
-            float startX = -totalW / 2f + SlotSize / 2f;
+            float bottomY = -totalH / 2f + SlotSize / 2f;
             for (int i = 0; i < n; i++)
             {
+                int row = i / cols;
+                int col = i % cols;
+                int rowCount = Mathf.Min(cols, n - row * cols);
+                float rowW = rowCount * SlotSize + (rowCount - 1) * SlotGap;
+                float startX = -rowW / 2f + SlotSize / 2f;
+                float y = bottomY + (rows - 1 - row) * (SlotSize + SlotGap);
+
                 _slots[i].Rect.anchorMin = _slots[i].Rect.anchorMax = new Vector2(0.5f, 0.5f);
-                _slots[i].Rect.anchoredPosition = new Vector2(startX + i * (SlotSize + SlotGap), 0f);
+                _slots[i].Rect.anchoredPosition = new Vector2(startX + col * (SlotSize + SlotGap), y);
             }
         }
 
@@ -223,6 +235,7 @@ namespace CasualtiesUnknown.Hotbar
 
                 slot.Bg.color = new Color(SlotBg.r, SlotBg.g, SlotBg.b, bgA);
                 slot.Border.color = new Color(SlotBorder.r, SlotBorder.g, SlotBorder.b, bgA);
+                slot.Key.text = KeyLabel(i);
                 slot.SelFrame.SetActive(i == _selected);
             }
         }
@@ -283,6 +296,45 @@ namespace CasualtiesUnknown.Hotbar
             slot.Status.enabled = true;
         }
 
+        private string KeyLabel(int index)
+        {
+            var sc = _cfg.SlotHotkey(index).Value;
+            if (sc.MainKey == KeyCode.None) return "";
+            string label = ShortKey(sc.MainKey);
+            foreach (var mod in sc.Modifiers)
+            {
+                label = ModPrefix(mod) + "+" + label;
+            }
+            return label;
+        }
+
+        private static string ShortKey(KeyCode key)
+        {
+            if (key >= KeyCode.Keypad0 && key <= KeyCode.Keypad9) return ((int)(key - KeyCode.Keypad0)).ToString();
+            if (key >= KeyCode.Alpha0 && key <= KeyCode.Alpha9) return ((int)(key - KeyCode.Alpha0)).ToString();
+            switch (key)
+            {
+                case KeyCode.Mouse0: return "LMB";
+                case KeyCode.Mouse1: return "RMB";
+                case KeyCode.Mouse2: return "MMB";
+                default: return key.ToString();
+            }
+        }
+
+        private static string ModPrefix(KeyCode mod)
+        {
+            switch (mod)
+            {
+                case KeyCode.LeftShift:
+                case KeyCode.RightShift: return "S";
+                case KeyCode.LeftControl:
+                case KeyCode.RightControl: return "C";
+                case KeyCode.LeftAlt:
+                case KeyCode.RightAlt: return "A";
+                default: return mod.ToString();
+            }
+        }
+
         private static Image NewImage(string name, RectTransform parent, Color color)
         {
             var go = new GameObject(name, typeof(RectTransform), typeof(Image));
@@ -325,6 +377,7 @@ namespace CasualtiesUnknown.Hotbar
             public Image Icon;
             public Image Status;
             public Text Count;
+            public Text Key;
             public GameObject SelFrame;
         }
     }
