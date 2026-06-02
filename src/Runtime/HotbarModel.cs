@@ -108,6 +108,41 @@ namespace CasualtiesUnknown.Hotbar
             SaveForCurrentRun();
         }
 
+        /// <summary>第 index 槽绑定的物品是否为安全口服/饮用消耗品（决定选中时是否切主手）。</summary>
+        internal bool IsConsumableSlot(int index)
+        {
+            var body = CurrentBody();
+            if (body == null) return false;
+            Item target = Resolve(index, body);
+            if (target == null || target.Stats == null) return false;
+            return IsInstantConsumable(target);
+        }
+
+        /// <summary>使用键的安全分流：选中槽为消耗品时用其绑定物品（可在背包），否则只使用主手物品。</summary>
+        internal void UseSelected(int index)
+        {
+            var body = CurrentBody();
+            if (body == null || !body.conscious || !body.allowUseItem) return;
+            Item target = body.GetItem(body.handSlot);
+            if (index >= 0)
+            {
+                Item slotItem = Resolve(index, body);
+                if (slotItem != null && slotItem.Stats != null && IsInstantConsumable(slotItem))
+                {
+                    target = slotItem;
+                }
+            }
+            if (target != null && target.Stats != null && target.Stats.usable)
+            {
+                body.UseItem(target);
+            }
+        }
+
+        private static bool IsInstantConsumable(Item item)
+        {
+            return ConsumableClassifier.IsConsumable(item);
+        }
+
         /// <summary>激活第 index 槽：空槽则收起当前快捷栏物品；否则归还上一物品并把本槽物品切到主手。</summary>
         internal bool Activate(int index)
         {

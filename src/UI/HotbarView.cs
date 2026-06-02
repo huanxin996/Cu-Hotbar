@@ -197,15 +197,21 @@ namespace CasualtiesUnknown.Hotbar
             float scale = _cfg.Scale.Value;
             _root.localScale = new Vector3(scale, scale, 1f);
 
+            _root.anchorMin = _root.anchorMax = new Vector2(_cfg.AnchorX.Value, _cfg.AnchorY.Value);
+            _root.pivot = new Vector2(0.5f, 0.5f);
+            _root.anchoredPosition = new Vector2(_cfg.OffsetX.Value, _cfg.OffsetY.Value);
+
+            if (_cfg.Vertical.Value) LayoutVertical(n);
+            else LayoutHorizontal(n);
+        }
+
+        private void LayoutHorizontal(int n)
+        {
             int rows = Mathf.Clamp(_cfg.RowCount.Value, 1, Mathf.Max(1, n));
             int cols = Mathf.CeilToInt((float)n / rows);
 
             float fullW = cols * SlotSize + (cols - 1) * SlotGap;
             float totalH = rows * SlotSize + (rows - 1) * SlotGap;
-
-            _root.anchorMin = _root.anchorMax = new Vector2(_cfg.AnchorX.Value, _cfg.AnchorY.Value);
-            _root.pivot = new Vector2(0.5f, 0.5f);
-            _root.anchoredPosition = new Vector2(_cfg.OffsetX.Value, _cfg.OffsetY.Value);
             _root.sizeDelta = new Vector2(fullW, totalH);
 
             float bottomY = -totalH / 2f + SlotSize / 2f;
@@ -220,6 +226,29 @@ namespace CasualtiesUnknown.Hotbar
 
                 _slots[i].Rect.anchorMin = _slots[i].Rect.anchorMax = new Vector2(0.5f, 0.5f);
                 _slots[i].Rect.anchoredPosition = new Vector2(startX + col * (SlotSize + SlotGap), y);
+            }
+        }
+
+        private void LayoutVertical(int n)
+        {
+            int cols = Mathf.Clamp(_cfg.RowCount.Value, 1, Mathf.Max(1, n));
+            int perCol = Mathf.CeilToInt((float)n / cols);
+
+            float fullW = cols * SlotSize + (cols - 1) * SlotGap;
+            float totalH = perCol * SlotSize + (perCol - 1) * SlotGap;
+            _root.sizeDelta = new Vector2(fullW, totalH);
+
+            float rightX = fullW / 2f - SlotSize / 2f;
+            float topY = totalH / 2f - SlotSize / 2f;
+            for (int i = 0; i < n; i++)
+            {
+                int col = i / perCol;
+                int row = i % perCol;
+                float x = rightX - col * (SlotSize + SlotGap);
+                float y = topY - row * (SlotSize + SlotGap);
+
+                _slots[i].Rect.anchorMin = _slots[i].Rect.anchorMax = new Vector2(0.5f, 0.5f);
+                _slots[i].Rect.anchoredPosition = new Vector2(x, y);
             }
         }
 

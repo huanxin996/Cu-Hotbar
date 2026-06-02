@@ -42,7 +42,8 @@ namespace CasualtiesUnknown.Hotbar
             bool vis = DrawSwitch(HotbarI18n.T("sw.visible"), _cfg.Visible.Value);
             if (vis != _cfg.Visible.Value) _cfg.Visible.Value = vis;
             DrawIntStepper(HotbarI18n.F("fmt.slot_count", _cfg.SlotCount.Value), _cfg.SlotCount, 1);
-            DrawIntStepper(HotbarI18n.F("fmt.row_count", _cfg.RowCount.Value), _cfg.RowCount, 1);
+            DrawIntStepper(HotbarI18n.F(_cfg.Vertical.Value ? "fmt.col_count" : "fmt.row_count", _cfg.RowCount.Value), _cfg.RowCount, 1);
+            DrawDirectionRow();
             DrawFloatSlider(HotbarI18n.F("fmt.scale", _cfg.Scale.Value), _cfg.Scale, 0.5f, 2f);
             DrawFloatSlider(HotbarI18n.F("fmt.bg_alpha", _cfg.BackgroundAlpha.Value), _cfg.BackgroundAlpha, 0f, 1f);
             GUILayout.EndVertical();
@@ -60,6 +61,10 @@ namespace CasualtiesUnknown.Hotbar
             if (sc != _cfg.EnableScroll.Value) _cfg.EnableScroll.Value = sc;
             bool ar = DrawSwitch(HotbarI18n.T("sw.auto_refill"), _cfg.AutoRefill.Value);
             if (ar != _cfg.AutoRefill.Value) _cfg.AutoRefill.Value = ar;
+            bool wod = DrawSwitch(HotbarI18n.T("sw.warn_on_drop"), _cfg.WarnOnDrop.Value);
+            if (wod != _cfg.WarnOnDrop.Value) _cfg.WarnOnDrop.Value = wod;
+            bool scu = DrawSwitch(HotbarI18n.T("sw.safe_quick_use"), _cfg.SafeQuickUse.Value);
+            if (scu != _cfg.SafeQuickUse.Value) _cfg.SafeQuickUse.Value = scu;
             GUILayout.EndVertical();
 
             GUILayout.Space(12f);
@@ -71,10 +76,8 @@ namespace CasualtiesUnknown.Hotbar
             DrawFloatSlider(HotbarI18n.F("fmt.offset_y", _cfg.OffsetY.Value), _cfg.OffsetY, 0f, 540f);
             if (GUILayout.Button(HotbarI18n.T("btn.reset_pos"), GUILayout.MaxWidth(260f), GUILayout.MinHeight(RowH)))
             {
-                _cfg.AnchorX.Value = 0.5f;
-                _cfg.AnchorY.Value = 0f;
-                _cfg.OffsetX.Value = 0f;
-                _cfg.OffsetY.Value = 90f;
+                if (_cfg.Vertical.Value) ApplyVerticalDefaults();
+                else ApplyHorizontalDefaults();
             }
             GUILayout.EndVertical();
 
@@ -102,6 +105,45 @@ namespace CasualtiesUnknown.Hotbar
             GUILayout.EndVertical();
 
             CaptureIfNeeded();
+        }
+
+        private void DrawDirectionRow()
+        {
+            bool vertical = _cfg.Vertical.Value;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(HotbarI18n.T("lbl.direction"), BlackWhiteSkin.RowLabelStyle,
+                GUILayout.MinWidth(LabelW), GUILayout.ExpandWidth(false), GUILayout.MinHeight(RowH));
+            if (GUILayout.Button(HotbarI18n.T("opt.horizontal"),
+                vertical ? BlackWhiteSkin.TabStyle : BlackWhiteSkin.TabActiveStyle,
+                GUILayout.MinWidth(140f), GUILayout.MinHeight(RowH)))
+            {
+                if (vertical) { _cfg.Vertical.Value = false; ApplyHorizontalDefaults(); }
+            }
+            GUILayout.Space(8f);
+            if (GUILayout.Button(HotbarI18n.T("opt.vertical"),
+                vertical ? BlackWhiteSkin.TabActiveStyle : BlackWhiteSkin.TabStyle,
+                GUILayout.MinWidth(140f), GUILayout.MinHeight(RowH)))
+            {
+                if (!vertical) { _cfg.Vertical.Value = true; ApplyVerticalDefaults(); }
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+        }
+
+        private void ApplyHorizontalDefaults()
+        {
+            _cfg.AnchorX.Value = 0.5f;
+            _cfg.AnchorY.Value = 0f;
+            _cfg.OffsetX.Value = 0f;
+            _cfg.OffsetY.Value = 90f;
+        }
+
+        private void ApplyVerticalDefaults()
+        {
+            _cfg.AnchorX.Value = 1f;
+            _cfg.AnchorY.Value = 0.5f;
+            _cfg.OffsetX.Value = -90f;
+            _cfg.OffsetY.Value = 0f;
         }
 
         private void DrawHotkeyRow(string label, ConfigEntry<KeyboardShortcut> entry)

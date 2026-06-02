@@ -15,6 +15,10 @@ namespace CasualtiesUnknown.Hotbar
             ["sw.visible"] = "显示快捷栏",
             ["fmt.slot_count"] = "槽位数量：{0}",
             ["fmt.row_count"] = "排数：{0}",
+            ["fmt.col_count"] = "列数：{0}",
+            ["lbl.direction"] = "排列方向：",
+            ["opt.horizontal"] = "横排",
+            ["opt.vertical"] = "竖排",
             ["fmt.scale"] = "缩放：{0:0.00}",
             ["fmt.bg_alpha"] = "背景透明度：{0:0.00}",
             ["sec.keys"] = "切换按键",
@@ -22,6 +26,8 @@ namespace CasualtiesUnknown.Hotbar
             ["lbl.use_item"] = "使用主手物品：",
             ["sw.enable_scroll"] = "滚轮切换选中槽",
             ["sw.auto_refill"] = "同种物品用尽前自动补充",
+            ["sw.warn_on_drop"] = "物品因背包满掉落时提示",
+            ["sw.safe_quick_use"] = "快捷安全使用（消耗品选中不切主手）",
             ["sec.position"] = "位置",
             ["fmt.anchor_x"] = "锚点 X：{0:0.00}",
             ["fmt.anchor_y"] = "锚点 Y：{0:0.00}",
@@ -37,9 +43,10 @@ namespace CasualtiesUnknown.Hotbar
             ["sw.show_log_in_console"] = "在游戏控制台显示模组日志",
             ["sw.accept_update_notice"] = "接受新版本更新提示",
             ["update.available"] = "CuHotbar 有新版本：{0}（点击打开 release 页）",
+            ["alert.dropped"] = "背包已满，{0} 已掉落",
             ["sw.on"] = "开",
             ["sw.off"] = "关",
-            ["hint.usage"] = "从背包拖物品到槽位绑定；按切换键切到主手；右键（默认 Shift+右键）使用。",
+            ["hint.usage"] = "拖物品到槽位或指向物品按对应键绑定；按切换键切到主手；右键（默认 Shift+右键）使用。",
         };
 
         private static readonly Dictionary<string, string> _en = new Dictionary<string, string>
@@ -51,6 +58,10 @@ namespace CasualtiesUnknown.Hotbar
             ["sw.visible"] = "Show hotbar",
             ["fmt.slot_count"] = "Slot count: {0}",
             ["fmt.row_count"] = "Rows: {0}",
+            ["fmt.col_count"] = "Columns: {0}",
+            ["lbl.direction"] = "Layout direction:",
+            ["opt.horizontal"] = "Horizontal",
+            ["opt.vertical"] = "Vertical",
             ["fmt.scale"] = "Scale: {0:0.00}",
             ["fmt.bg_alpha"] = "Background alpha: {0:0.00}",
             ["sec.keys"] = "Switch keys",
@@ -58,6 +69,8 @@ namespace CasualtiesUnknown.Hotbar
             ["lbl.use_item"] = "Use held item:",
             ["sw.enable_scroll"] = "Scroll wheel switches slot",
             ["sw.auto_refill"] = "Auto-refill slot while stock remains",
+            ["sw.warn_on_drop"] = "Warn when an item is dropped (inventory full)",
+            ["sw.safe_quick_use"] = "Safe quick use (consumables select without switching)",
             ["sec.position"] = "Position",
             ["fmt.anchor_x"] = "Anchor X: {0:0.00}",
             ["fmt.anchor_y"] = "Anchor Y: {0:0.00}",
@@ -73,9 +86,10 @@ namespace CasualtiesUnknown.Hotbar
             ["sw.show_log_in_console"] = "Show mod logs in game console",
             ["sw.accept_update_notice"] = "Accept update notifications",
             ["update.available"] = "CuHotbar update available: {0} (click to open release page)",
+            ["alert.dropped"] = "Inventory full, {0} was dropped",
             ["sw.on"] = "ON",
             ["sw.off"] = "OFF",
-            ["hint.usage"] = "Drag an item onto a slot to bind; press its key to hold; use with the use-key (default Shift+RightClick).",
+            ["hint.usage"] = "Drag an item onto a slot, or point at an item and press its key to bind; press the key to hold; use with the use-key (default Shift+RightClick).",
         };
 
         private static Dictionary<string, string> Current

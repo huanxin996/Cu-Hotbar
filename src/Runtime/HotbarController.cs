@@ -39,14 +39,7 @@ namespace CasualtiesUnknown.Hotbar
         {
             if (!_cfg.UseItemHotkey.Value.IsDown()) return;
             if (_view.TryGetSlotIndexAt(Input.mousePosition, out _)) return;
-            var cam = PlayerCamera.main;
-            var body = cam != null ? cam.body : null;
-            if (body == null || !body.conscious || !body.allowUseItem) return;
-            var held = body.GetItem(body.handSlot);
-            if (held != null && held.Stats != null && held.Stats.usable)
-            {
-                body.UseItem(held);
-            }
+            _model.UseSelected(_view.Selected);
         }
 
         private void HandleScroll()
@@ -63,6 +56,11 @@ namespace CasualtiesUnknown.Hotbar
             int start = _view.Selected < 0 ? 0 : _view.Selected;
             int dir = scroll > 0f ? -1 : 1;
             int idx = ((start + dir) % n + n) % n;
+            if (_cfg.SafeQuickUse.Value && _model.IsConsumableSlot(idx))
+            {
+                _view.Selected = idx;
+                return;
+            }
             if (_model.Activate(idx)) _view.Selected = idx;
         }
 
@@ -83,6 +81,13 @@ namespace CasualtiesUnknown.Hotbar
             {
                 if (_cfg.SlotHotkey(i).Value.IsDown())
                 {
+                    var hover = HoverItemLocator.ItemUnderMouse();
+                    if (hover != null) { _model.Link(i, hover); return; }
+                    if (_cfg.SafeQuickUse.Value && _model.IsConsumableSlot(i))
+                    {
+                        _view.Selected = i;
+                        return;
+                    }
                     if (_model.Activate(i)) _view.Selected = i;
                     return;
                 }

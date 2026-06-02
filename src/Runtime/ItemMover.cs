@@ -62,7 +62,7 @@ namespace CasualtiesUnknown.Hotbar
             return false;
         }
 
-        /// <summary>把占用主手的物品挪到身上空槽；无空槽则掉地。</summary>
+        /// <summary>把占用主手的物品挪到身上空槽，无空槽则塞入可容纳的背包容器；都不行才掉地并警告。</summary>
         internal static void Stash(Body body, Item item)
         {
             if (body == null || item == null) return;
@@ -74,7 +74,38 @@ namespace CasualtiesUnknown.Hotbar
                 body.SwapSlots(hand, empty.Value);
                 return;
             }
+            var cont = FindStorableContainer(body, item);
+            if (cont != null)
+            {
+                body.DropItem(item);
+                cont.LoadItem(item);
+                if (item.transform.parent == cont.transform) return;
+            }
             body.DropItem(item);
+            WarnDropped(item);
+        }
+
+        private static Container FindStorableContainer(Body body, Item item)
+        {
+            foreach (var it in body.GetAllItemsThorough())
+            {
+                if (it == null || it == item) continue;
+                if (it.TryGetComponent<Container>(out var cont) && cont.CanHoldItem(item))
+                {
+                    return cont;
+                }
+            }
+            return null;
+        }
+
+        private static void WarnDropped(Item item)
+        {
+            var cfg = HotbarRuntime.Config;
+            if (cfg != null && !cfg.WarnOnDrop.Value) return;
+            var cam = PlayerCamera.main;
+            if (cam == null) return;
+            string name = item.Stats != null ? item.fullName : item.id;
+            cam.DoAlert(HotbarI18n.F("alert.dropped", name), true);
         }
 
         /// <summary>把 item 切到主手：身上槽间用 SwapSlots，容器/地面先脱离再拾取。要求主手已空。</summary>

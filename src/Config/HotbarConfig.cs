@@ -20,6 +20,7 @@ namespace CasualtiesUnknown.Hotbar
 
         internal ConfigEntry<int> SlotCount { get; }
         internal ConfigEntry<int> RowCount { get; }
+        internal ConfigEntry<bool> Vertical { get; }
         internal ConfigEntry<bool> Visible { get; }
         internal ConfigEntry<float> AnchorX { get; }
         internal ConfigEntry<float> AnchorY { get; }
@@ -34,6 +35,8 @@ namespace CasualtiesUnknown.Hotbar
         internal ConfigEntry<bool> AcceptUpdateNotice { get; }
         internal ConfigEntry<bool> EnableScroll { get; }
         internal ConfigEntry<bool> AutoRefill { get; }
+        internal ConfigEntry<bool> WarnOnDrop { get; }
+        internal ConfigEntry<bool> SafeQuickUse { get; }
 
         internal HotbarConfig(ConfigFile config)
         {
@@ -41,7 +44,9 @@ namespace CasualtiesUnknown.Hotbar
             SlotCount = config.Bind("Hotbar", "SlotCount", 9,
                 new ConfigDescription("快捷栏槽位数量。", new AcceptableValueRange<int>(1, int.MaxValue)));
             RowCount = config.Bind("Hotbar", "RowCount", 1,
-                new ConfigDescription("快捷栏排数，槽位按网格分排显示。", new AcceptableValueRange<int>(1, int.MaxValue)));
+                new ConfigDescription("快捷栏排数；横排为行数、竖排为列数，槽位按网格分布。", new AcceptableValueRange<int>(1, int.MaxValue)));
+            Vertical = config.Bind("Hotbar", "Vertical", false,
+                "排列方向：false=横排（默认靠下），true=竖排（默认靠右）。");
             Visible = config.Bind("Hotbar", "Visible", true, "是否显示快捷栏。");
             Scale = config.Bind("Hotbar", "Scale", 1.0f,
                 new ConfigDescription("快捷栏整体缩放。", new AcceptableValueRange<float>(0.5f, 2.0f)));
@@ -69,6 +74,10 @@ namespace CasualtiesUnknown.Hotbar
                 "鼠标滚轮切换当前选中槽并切到主手。");
             AutoRefill = config.Bind("Hotbar", "AutoRefill", true,
                 "槽内物品丢出或用尽消失后，若身上仍有同种物品则自动补上，不取消绑定。");
+            WarnOnDrop = config.Bind("Hotbar", "WarnOnDrop", true,
+                "切换时主手物品因背包已满而掉落时，在屏幕给出提示。");
+            SafeQuickUse = config.Bind("Hotbar", "SafeQuickUse", true,
+                "快捷安全使用：消耗品（食物/饮品/口服药）按槽位键只选中不切主手，由使用键使用；其余物品仍切主手，使用键只作用于主手物品。");
         }
 
         internal static bool TriggeredThisFrame(ConfigEntry<KeyboardShortcut> entry)
