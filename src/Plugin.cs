@@ -39,6 +39,7 @@ namespace CasualtiesUnknown.Hotbar
             ModLog.Init(_log);
 
             _cfg = new HotbarConfig(Config);
+            HotbarRuntime.Config = _cfg;
             ModLog.ShowInConsole = _cfg.ShowLogInConsole.Value;
             _cfg.ShowLogInConsole.SettingChanged += (_, __) => ModLog.ShowInConsole = _cfg.ShowLogInConsole.Value;
             UpdateChecker.Enabled = _cfg.AcceptUpdateNotice.Value;
