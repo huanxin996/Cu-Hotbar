@@ -2,6 +2,12 @@
 
 > English changelog: see [changes.en.md](changes.en.md)
 
+## v1.0.3
+
+### 修复
+
+- **新版游戏 UI 兼容**：适配最新游戏版本移除旧 `brightnessPanel` 后的暂停菜单宿主变化，独立模式下的暂停菜单按钮与滚轮输入屏蔽改为兼容新版 `PauseHandler`。
+
 ## v1.0.2
 
 ### 新增

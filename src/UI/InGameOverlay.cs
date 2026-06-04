@@ -12,9 +12,7 @@ namespace CasualtiesUnknown.Hotbar
 
         internal static bool ShouldShow()
         {
-            if (PlayerCamera.main == null) return false;
-            var panel = PlayerCamera.main.brightnessPanel;
-            return panel != null && panel.activeSelf;
+            return PauseMenuCompat.IsPauseMenuOpen();
         }
 
         internal void Draw(System.Action onClick)

@@ -1,4 +1,4 @@
-# CuHotbar V1.0.2 for Casualties: Unknown
+# CuHotbar V1.0.3 for Casualties: Unknown
 
 > A Minecraft-style hotbar mod for Casualties: Unknown
 > Compatible with: SaveManager (settings merge into its panel when present; its absence does not break features)

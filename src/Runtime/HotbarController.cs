@@ -50,7 +50,7 @@ namespace CasualtiesUnknown.Hotbar
             if (Mathf.Abs(scroll) < 0.01f) return;
             var cam = PlayerCamera.main;
             if (cam == null || cam.body == null || !cam.body.conscious) return;
-            if (cam.brightnessPanel != null && cam.brightnessPanel.activeSelf) return;
+            if (PauseMenuCompat.IsPauseMenuOpen()) return;
 
             int n = _model.SlotCount;
             int start = _view.Selected < 0 ? 0 : _view.Selected;

@@ -2,6 +2,12 @@
 
 > 中文更新日志：见 [changes.md](changes.md)
 
+## v1.0.3
+
+### Fixed
+
+- **Latest game UI compatibility**: adapted standalone pause-menu entry and scroll-input blocking to the new `PauseHandler`-based pause UI after the game removed the old `brightnessPanel` host.
+
 ## v1.0.2
 
 ### Added
