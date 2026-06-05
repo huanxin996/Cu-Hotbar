@@ -1,9 +1,13 @@
-# CuHotbar V1.0.4 for Casualties: Unknown
+# CuHotbar V1.0.5 for Casualties: Unknown
 
 > 适配游戏《未知伤亡》的快捷物品栏模组，仿 Minecraft 物品栏
 > 兼容：SaveManager（在场时设置合并到其面板，缺少不影响功能）
 
 English guide: see [README.en.md](README.en.md)
+
+## 1.0.5
+
+- 修复 `ImGuiImeRecovery` 误清 KrokMP 多人连接页等外部 IMGUI 焦点，导致 IP/用户名字段无法输入的问题；移除 `HotbarController` 多余的每帧 IME 回收。
 
 ## 1.0.4
 

@@ -14,16 +14,13 @@ namespace CasualtiesUnknown.Hotbar
 
         internal static void TickUpdate(bool textInputExpected)
         {
-            if (textInputExpected) return;
-            if (_pendingClear || GUIUtility.keyboardControl != 0 || Input.imeIsSelected)
-                _pendingClear = true;
+            if (textInputExpected) _pendingClear = false;
         }
 
         internal static void TickOnGui(bool textInputExpected)
         {
             if (textInputExpected) return;
-            if (!_pendingClear && GUIUtility.keyboardControl == 0 && !Input.imeIsSelected)
-                return;
+            if (!_pendingClear) return;
 
             var ev = Event.current;
             if (ev == null || ev.type != EventType.Layout) return;

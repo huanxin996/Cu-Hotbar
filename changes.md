@@ -2,6 +2,12 @@
 
 > English changelog: see [changes.en.md](changes.en.md)
 
+## v1.0.5
+
+### 修复
+
+- **不再抢占其他 IMGUI 输入焦点**：`ImGuiImeRecovery` 仅在设置面板关闭时清焦点，不会因 KrokMP 多人连接页等外部 TextField 有焦点就 `FocusControl(null)`；移除 `HotbarController` 每帧多余的 IME 回收调用。
+
 ## v1.0.3
 
 ### 修复

@@ -1,9 +1,13 @@
-# CuHotbar V1.0.4 for Casualties: Unknown
+# CuHotbar V1.0.5 for Casualties: Unknown
 
 > A Minecraft-style hotbar mod for Casualties: Unknown
 > Compatible with: SaveManager (settings merge into its panel when present; its absence does not break features)
 
 中文说明：见 [README.md](README.md)
+
+## 1.0.5
+
+- Fixed `ImGuiImeRecovery` clearing keyboard focus from external IMGUI (e.g. KrokMP connection IP/username fields), which blocked typing; removed redundant per-frame IME recovery from `HotbarController`.
 
 ## 1.0.4
 

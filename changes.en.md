@@ -2,6 +2,12 @@
 
 > 中文更新日志：见 [changes.md](changes.md)
 
+## v1.0.5
+
+### Fixed
+
+- **No longer steals other IMGUI text focus**: `ImGuiImeRecovery` only clears focus when the settings panel closes, instead of calling `FocusControl(null)` whenever an external TextField (e.g. KrokMP connection form) has keyboard focus; removed the redundant per-frame IME tick from `HotbarController`.
+
 ## v1.0.3
 
 ### Fixed

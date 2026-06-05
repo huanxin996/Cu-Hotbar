@@ -35,7 +35,6 @@ namespace CasualtiesUnknown.Hotbar
         private void LateUpdate()
         {
             if (_cfg == null) return;
-            ImGuiImeRecovery.TickUpdate(textInputExpected: false);
             HandleKeys();
             HandleUseItem();
             HandleScroll();
