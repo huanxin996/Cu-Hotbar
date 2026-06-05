@@ -1,9 +1,13 @@
-# CuHotbar V1.0.3 for Casualties: Unknown
+# CuHotbar V1.0.4 for Casualties: Unknown
 
 > 适配游戏《未知伤亡》的快捷物品栏模组，仿 Minecraft 物品栏
 > 兼容：SaveManager（在场时设置合并到其面板，缺少不影响功能）
 
 English guide: see [README.en.md](README.en.md)
+
+## 1.0.4
+
+- 修复 SaveManager 面板或其他 IMGUI 界面用过中文输入法后，槽位切换键和使用键失效的问题。
 
 ## 简介
 

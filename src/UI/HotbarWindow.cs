@@ -37,7 +37,10 @@ namespace CasualtiesUnknown.Hotbar
         {
             Open = false;
             _content.CancelKeyCapture();
+            ImGuiImeRecovery.RequestClear();
         }
+
+        internal bool ExpectsTextInput => Open && _content.IsCapturingHotkey;
 
         internal void Draw()
         {

@@ -16,7 +16,7 @@ namespace CasualtiesUnknown.Hotbar
     {
         internal const string PluginGuid = "com.casualtiesUnknown.hotbar";
         internal const string PluginName = "CuHotbar";
-        internal const string PluginVersion = "1.0.3";
+        internal const string PluginVersion = "1.0.4";
 
         private const string SaveManagerGuid = "com.casualtiesUnknown.saveManager";
 
@@ -80,8 +80,11 @@ namespace CasualtiesUnknown.Hotbar
             ModLog.Info($"{PluginName} v{PluginVersion} ready");
         }
 
-        private void Update()
+        private void LateUpdate()
         {
+            bool textInput = _standalone && _window != null && _window.ExpectsTextInput;
+            ImGuiImeRecovery.TickUpdate(textInput);
+
             if (_standalone && HotbarConfig.TriggeredThisFrame(_cfg.ToggleSettingsHotkey))
             {
                 _window.Toggle();
@@ -94,6 +97,8 @@ namespace CasualtiesUnknown.Hotbar
 
         private void OnGUI()
         {
+            bool textInput = _standalone && _window != null && _window.ExpectsTextInput;
+            ImGuiImeRecovery.TickOnGui(textInput);
             if (_standalone) _overlay?.Draw(() => _window.OpenIfClosed());
             _window?.Draw();
         }

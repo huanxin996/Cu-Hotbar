@@ -1,9 +1,13 @@
-# CuHotbar V1.0.3 for Casualties: Unknown
+# CuHotbar V1.0.4 for Casualties: Unknown
 
 > A Minecraft-style hotbar mod for Casualties: Unknown
 > Compatible with: SaveManager (settings merge into its panel when present; its absence does not break features)
 
 中文说明：见 [README.md](README.md)
+
+## 1.0.4
+
+- Fixed slot switch keys and the use key stopping after Chinese IME input in SaveManager's panel or other IMGUI UIs.
 
 ## Overview
 

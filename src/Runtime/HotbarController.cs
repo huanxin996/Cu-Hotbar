@@ -29,10 +29,16 @@ namespace CasualtiesUnknown.Hotbar
             SyncRun();
             _model.RefillActiveIfNeeded();
             _model.Refresh();
+            _view.Tick();
+        }
+
+        private void LateUpdate()
+        {
+            if (_cfg == null) return;
+            ImGuiImeRecovery.TickUpdate(textInputExpected: false);
             HandleKeys();
             HandleUseItem();
             HandleScroll();
-            _view.Tick();
         }
 
         private void HandleUseItem()

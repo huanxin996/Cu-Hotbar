@@ -31,6 +31,8 @@ namespace CasualtiesUnknown.Hotbar
 
         internal void CancelKeyCapture() => _capturing = null;
 
+        internal bool IsCapturingHotkey => _capturing != null;
+
         internal void Draw()
         {
             BlackWhiteSkin.EnsureStyles();
@@ -102,6 +104,7 @@ namespace CasualtiesUnknown.Hotbar
                 _cfg.AcceptUpdateNotice.Value = upd;
                 UpdateChecker.Enabled = upd;
             }
+            DrawLanguageModeRow(HotbarI18n.T("lbl.language"), _cfg.PreferredLanguage);
             GUILayout.EndVertical();
 
             CaptureIfNeeded();
@@ -232,6 +235,44 @@ namespace CasualtiesUnknown.Hotbar
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             return result;
+        }
+
+        private static void DrawLanguageModeRow(string label, ConfigEntry<string> entry)
+        {
+            string mode = NormalizeLanguageMode(entry.Value);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label, BlackWhiteSkin.RowLabelStyle,
+                GUILayout.MinWidth(LabelW), GUILayout.ExpandWidth(false), GUILayout.MinHeight(RowH));
+            GUILayout.Space(20f);
+            if (GUILayout.Button(HotbarI18n.T("opt.language_auto"),
+                mode == "auto" ? BlackWhiteSkin.TabActiveStyle : BlackWhiteSkin.TabStyle,
+                GUILayout.MinWidth(140f), GUILayout.MinHeight(RowH)))
+            {
+                entry.Value = "auto";
+            }
+            GUILayout.Space(8f);
+            if (GUILayout.Button(HotbarI18n.T("opt.language_zh"),
+                mode == "zh" ? BlackWhiteSkin.TabActiveStyle : BlackWhiteSkin.TabStyle,
+                GUILayout.MinWidth(120f), GUILayout.MinHeight(RowH)))
+            {
+                entry.Value = "zh";
+            }
+            GUILayout.Space(8f);
+            if (GUILayout.Button(HotbarI18n.T("opt.language_en"),
+                mode == "en" ? BlackWhiteSkin.TabActiveStyle : BlackWhiteSkin.TabStyle,
+                GUILayout.MinWidth(120f), GUILayout.MinHeight(RowH)))
+            {
+                entry.Value = "en";
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+        }
+
+        private static string NormalizeLanguageMode(string mode)
+        {
+            if (string.IsNullOrWhiteSpace(mode)) return "auto";
+            mode = mode.Trim().ToLowerInvariant();
+            return mode == "zh" || mode == "en" ? mode : "auto";
         }
 
         private static void DrawIntStepper(string label, ConfigEntry<int> entry, int min)
