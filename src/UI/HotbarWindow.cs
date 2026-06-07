@@ -13,6 +13,7 @@ namespace CasualtiesUnknown.Hotbar
 
         private readonly HotbarSettingsContent _content;
         private Rect _rect = new Rect(160f, 110f, Width, Height);
+        private float _drawScale = 1f;
         private Vector2 _scroll;
 
         internal bool Open { get; private set; }
@@ -45,15 +46,33 @@ namespace CasualtiesUnknown.Hotbar
         internal void Draw()
         {
             if (!Open) return;
+            _drawScale = ComputeScale();
+            _rect.width = Width;
+            _rect.height = Height;
+            float maxX = Mathf.Max(0f, Screen.width / _drawScale - Width);
+            float maxY = Mathf.Max(0f, Screen.height / _drawScale - Height);
+            _rect.x = Mathf.Clamp(_rect.x, 0f, maxX);
+            _rect.y = Mathf.Clamp(_rect.y, 0f, maxY);
+
             BlackWhiteSkin.Push();
+            Matrix4x4 prev = GUI.matrix;
             try
             {
+                GUI.matrix = Matrix4x4.Scale(new Vector3(_drawScale, _drawScale, 1f));
                 _rect = GUI.ModalWindow(WindowId, _rect, DrawContent, "");
             }
             finally
             {
+                GUI.matrix = prev;
                 BlackWhiteSkin.Pop();
             }
+        }
+
+        /// <summary>按屏幕尺寸算缩放比，使窗口不超出屏幕；屏幕足够大时不放大（上限 1）。</summary>
+        private static float ComputeScale()
+        {
+            float fit = Mathf.Min(Screen.width / Width, Screen.height / Height) * 0.92f;
+            return Mathf.Clamp(fit, 0.3f, 1f);
         }
 
         private void DrawContent(int id)

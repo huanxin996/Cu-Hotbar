@@ -1,9 +1,13 @@
-# CuHotbar V1.0.5 for Casualties: Unknown
+# CuHotbar V1.0.6 for Casualties: Unknown
 
 > 适配游戏《未知伤亡》的快捷物品栏模组，仿 Minecraft 物品栏
 > 兼容：SaveManager（在场时设置合并到其面板，缺少不影响功能）
 
 English guide: see [README.en.md](README.en.md)
+
+## 1.0.6
+
+- 设置面板按屏幕分辨率整体等比缩放，不再超出屏幕；修复缩放后右上角 X 关闭图标显示异常。
 
 ## 1.0.5
 

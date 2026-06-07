@@ -1,9 +1,13 @@
-# CuHotbar V1.0.5 for Casualties: Unknown
+# CuHotbar V1.0.6 for Casualties: Unknown
 
 > A Minecraft-style hotbar mod for Casualties: Unknown
 > Compatible with: SaveManager (settings merge into its panel when present; its absence does not break features)
 
 中文说明：见 [README.md](README.md)
+
+## 1.0.6
+
+- The settings panel now scales uniformly to the screen resolution so it no longer overflows; fixed the top-right X close icon rendering wrong when scaled.
 
 ## 1.0.5
 
