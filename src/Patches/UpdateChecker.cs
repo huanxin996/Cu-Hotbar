@@ -16,6 +16,7 @@ namespace CasualtiesUnknown.Hotbar
         private const string PluginGuid = "com.casualtiesUnknown.hotbar";
         private const string ApiUrl = "https://api.github.com/repos/huanxin996/Cu-Hotbar/releases/latest";
         private const string ReleasesUrl = "https://github.com/huanxin996/Cu-Hotbar/releases";
+        private const int UpdateNoticeSlot = 0;
 
         internal static bool Enabled = true;
 
@@ -100,7 +101,7 @@ namespace CasualtiesUnknown.Hotbar
 
             string text = HotbarI18n.F("update.available", _latestTag);
             float x = 32f;
-            float y = Screen.height * 0.18f;
+            float y = Screen.height * 0.12f + UpdateNoticeSlot * 40f;
             Vector2 size = style.CalcSize(new GUIContent(text));
             var rect = new Rect(x, y, size.x + 8f, size.y + 4f);
             if (GUI.Button(rect, text, style))

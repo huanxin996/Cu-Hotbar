@@ -33,6 +33,7 @@ namespace CasualtiesUnknown.Hotbar
             ["sw.auto_refill"] = "同种物品用尽前自动补充",
             ["sw.warn_on_drop"] = "物品因背包满掉落时提示",
             ["sw.safe_quick_use"] = "快捷安全使用（消耗品选中不切主手）",
+            ["sw.auto_reload"] = "自动装填（主手持枪缺弹时从背包补匹配弹药）",
             ["sec.position"] = "位置",
             ["fmt.anchor_x"] = "锚点 X：{0:0.00}",
             ["fmt.anchor_y"] = "锚点 Y：{0:0.00}",
@@ -56,6 +57,16 @@ namespace CasualtiesUnknown.Hotbar
             ["sw.on"] = "开",
             ["sw.off"] = "关",
             ["hint.usage"] = "拖物品到槽位或指向物品按对应键绑定；按切换键切到主手；右键（默认 Shift+右键）使用。",
+            ["tab.settings"] = "设置",
+            ["tab.about"] = "关于",
+            ["about.title"] = "CuHotbar",
+            ["about.desc"] = "MC 风快捷物品栏：拖物品到槽位 / 数字键切换 / 自动补充 / 安全使用消耗品。",
+            ["about.version"] = "版本：{0}",
+            ["about.sec_links"] = "链接",
+            ["about.link_repo"] = "GitHub 仓库",
+            ["about.link_release"] = "最新版本",
+            ["about.sec_credits"] = "开发人员",
+            ["about.sec_deps"] = "依赖与致谢",
         };
 
         private static readonly Dictionary<string, string> _en = new Dictionary<string, string>
@@ -80,6 +91,7 @@ namespace CasualtiesUnknown.Hotbar
             ["sw.auto_refill"] = "Auto-refill slot while stock remains",
             ["sw.warn_on_drop"] = "Warn when an item is dropped (inventory full)",
             ["sw.safe_quick_use"] = "Safe quick use (consumables select without switching)",
+            ["sw.auto_reload"] = "Auto reload (load matching ammo from inventory when held firearm is empty)",
             ["sec.position"] = "Position",
             ["fmt.anchor_x"] = "Anchor X: {0:0.00}",
             ["fmt.anchor_y"] = "Anchor Y: {0:0.00}",
@@ -103,6 +115,16 @@ namespace CasualtiesUnknown.Hotbar
             ["sw.on"] = "ON",
             ["sw.off"] = "OFF",
             ["hint.usage"] = "Drag an item onto a slot, or point at an item and press its key to bind; press the key to hold; use with the use-key (default Shift+RightClick).",
+            ["tab.settings"] = "Settings",
+            ["tab.about"] = "About",
+            ["about.title"] = "CuHotbar",
+            ["about.desc"] = "MC-style hotbar: drag to slot / number-key switch / auto-refill / safe consumable use.",
+            ["about.version"] = "Version: {0}",
+            ["about.sec_links"] = "Links",
+            ["about.link_repo"] = "GitHub repository",
+            ["about.link_release"] = "Latest release",
+            ["about.sec_credits"] = "Developers",
+            ["about.sec_deps"] = "Dependencies & thanks",
         };
 
         private static Dictionary<string, string> Current

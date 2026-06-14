@@ -37,6 +37,7 @@ namespace CasualtiesUnknown.Hotbar
         internal ConfigEntry<bool> AutoRefill { get; }
         internal ConfigEntry<bool> WarnOnDrop { get; }
         internal ConfigEntry<bool> SafeQuickUse { get; }
+        internal ConfigEntry<bool> AutoReload { get; }
         internal ConfigEntry<string> PreferredLanguage { get; }
 
         internal HotbarConfig(ConfigFile config)
@@ -79,6 +80,8 @@ namespace CasualtiesUnknown.Hotbar
                 "切换时主手物品因背包已满而掉落时，在屏幕给出提示。");
             SafeQuickUse = config.Bind("Hotbar", "SafeQuickUse", true,
                 "快捷安全使用：消耗品（食物/饮品/口服药）按槽位键只选中不切主手，由使用键使用；其余物品仍切主手，使用键只作用于主手物品。");
+            AutoReload = config.Bind("Hotbar", "AutoReload", true,
+                "自动装填：主手持枪且枪内缺弹（缺弹夹 / 弹仓未满 / 已上膛但膛空）时，自动从背包扫描匹配该枪 ammoType 的弹药装填一发。");
             PreferredLanguage = config.Bind("I18n", "PreferredLanguage", "auto",
                 "界面语言：auto=跟随游戏；zh=强制中文；en=强制英文。该值会写入配置文件并在重启后保留。");
         }

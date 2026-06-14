@@ -14,7 +14,6 @@ namespace CasualtiesUnknown.Hotbar
         private readonly HotbarSettingsContent _content;
         private Rect _rect = new Rect(160f, 110f, Width, Height);
         private float _drawScale = 1f;
-        private Vector2 _scroll;
 
         internal bool Open { get; private set; }
 
@@ -92,9 +91,7 @@ namespace CasualtiesUnknown.Hotbar
 
             var bodyRect = new Rect(24f, TitleBarHeight + 16f, Width - 48f, Height - TitleBarHeight - 40f);
             GUILayout.BeginArea(bodyRect);
-            _scroll = GUILayout.BeginScrollView(_scroll, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
             _content.Draw();
-            GUILayout.EndScrollView();
             GUILayout.EndArea();
 
             GUI.DragWindow(new Rect(0f, 0f, Width - CloseBtnSize - 24f, TitleBarHeight));

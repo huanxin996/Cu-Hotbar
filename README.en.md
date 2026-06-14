@@ -5,6 +5,13 @@
 
 中文说明：见 [README.md](README.md)
 
+## 1.0.7
+
+- Settings panel gains an "About" tab in the SkinSync-style centered layout, listing version / repo / latest release / author / dependencies.
+- "Misc" section adds a UI language switch (auto / Chinese / English); written to `I18n.PreferredLanguage` in the config file and persisted across restarts.
+- New **Auto Reload** (on by default, Settings → "Switch Keys" section): when the firearm in your main hand is short of ammo (no magazine / direct-feed magazine not full / racked but chamber empty), the mod scans your inventory for matching `ammoType` and loads one round / magazine; full magazines are preferred. No keypress and no hand swap; if conditions aren't met it stays out of the way.
+- Fixed the settings panel being unable to scroll and getting bottom content cut off when embedded in CuSaveManager's sidebar: pushed `ScrollView` down into the settings content itself, and removed the outer ScrollView from the standalone window so the two paths don't nest.
+
 ## 1.0.6
 
 - The settings panel now scales uniformly to the screen resolution so it no longer overflows; fixed the top-right X close icon rendering wrong when scaled.

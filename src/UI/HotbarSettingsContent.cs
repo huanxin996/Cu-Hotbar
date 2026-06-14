@@ -23,6 +23,8 @@ namespace CasualtiesUnknown.Hotbar
 
         private readonly HotbarConfig _cfg;
         private ConfigEntry<KeyboardShortcut> _capturing;
+        private int _tab;
+        private Vector2 _scroll;
 
         internal HotbarSettingsContent(HotbarConfig cfg)
         {
@@ -36,6 +38,111 @@ namespace CasualtiesUnknown.Hotbar
         internal void Draw()
         {
             BlackWhiteSkin.EnsureStyles();
+            DrawTabBar();
+            GUILayout.Space(8f);
+            _scroll = GUILayout.BeginScrollView(_scroll,
+                GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            if (_tab == 1) DrawAbout();
+            else DrawSettings();
+            GUILayout.EndScrollView();
+            CaptureIfNeeded();
+        }
+
+        private void DrawTabBar()
+        {
+            GUILayout.BeginHorizontal();
+            DrawTabBtn(HotbarI18n.T("tab.settings"), 0);
+            GUILayout.Space(8f);
+            DrawTabBtn(HotbarI18n.T("tab.about"), 1);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawTabBtn(string label, int idx)
+        {
+            var style = _tab == idx ? BlackWhiteSkin.TabActiveStyle : BlackWhiteSkin.TabStyle;
+            if (GUILayout.Button(label, style, GUILayout.MinWidth(180f), GUILayout.MinHeight(48f)))
+            {
+                _tab = idx;
+            }
+        }
+
+        private void DrawAbout()
+        {
+            GUILayout.Space(12f);
+            GUILayout.Label(HotbarI18n.T("about.title"), CenterTitleStyle, GUILayout.ExpandWidth(true));
+            GUILayout.Space(6f);
+            GUILayout.Label(HotbarI18n.T("about.desc"), CenterLabelStyle, GUILayout.ExpandWidth(true));
+            GUILayout.Label(HotbarI18n.F("about.version", Plugin.PluginVersion), CenterLabelStyle, GUILayout.ExpandWidth(true));
+
+            GUILayout.Space(16f);
+            GUILayout.Label(HotbarI18n.T("about.sec_links"), CenterTitleStyle, GUILayout.ExpandWidth(true));
+            GUILayout.Space(6f);
+            DrawLinkButton(HotbarI18n.T("about.link_repo"), "https://github.com/huanxin996/Cu-Save-Manager");
+            DrawLinkButton(HotbarI18n.T("about.link_release"), "https://github.com/huanxin996/Cu-Save-Manager/releases/latest");
+
+            GUILayout.Space(16f);
+            GUILayout.Label(HotbarI18n.T("about.sec_credits"), CenterTitleStyle, GUILayout.ExpandWidth(true));
+            GUILayout.Space(6f);
+            DrawNameButton("huanxin996", "https://github.com/huanxin996");
+
+            GUILayout.Space(16f);
+            GUILayout.Label(HotbarI18n.T("about.sec_deps"), CenterTitleStyle, GUILayout.ExpandWidth(true));
+            GUILayout.Space(6f);
+            DrawLinkButton("BepInEx", "https://github.com/BepInEx/BepInEx");
+            DrawLinkButton("CuSaveManager", "https://github.com/huanxin996/Cu-Save-Manager");
+        }
+
+        private static GUIStyle _centerTitle;
+        private static GUIStyle CenterTitleStyle
+        {
+            get
+            {
+                if (_centerTitle == null) _centerTitle = new GUIStyle(BlackWhiteSkin.HeaderStyle) { alignment = TextAnchor.MiddleCenter };
+                return _centerTitle;
+            }
+        }
+
+        private static GUIStyle _centerLabel;
+        private static GUIStyle CenterLabelStyle
+        {
+            get
+            {
+                if (_centerLabel == null) _centerLabel = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, wordWrap = true };
+                return _centerLabel;
+            }
+        }
+
+        private static void DrawLinkButton(string label, string url)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(label, BlackWhiteSkin.TabStyle,
+                GUILayout.MinWidth(560f), GUILayout.ExpandWidth(false), GUILayout.MinHeight(48f)))
+            {
+                try { Application.OpenURL(url); } catch { }
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.Space(6f);
+        }
+
+        private static void DrawNameButton(string name, string url)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(name,
+                GUILayout.MinWidth(280f), GUILayout.ExpandWidth(false), GUILayout.MinHeight(40f)))
+            {
+                try { Application.OpenURL(url); } catch { }
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.Space(4f);
+        }
+
+        private void DrawSettings()
+        {
             GUILayout.Label(HotbarI18n.T("hint.usage"));
             GUILayout.Space(8f);
 
@@ -67,6 +174,8 @@ namespace CasualtiesUnknown.Hotbar
             if (wod != _cfg.WarnOnDrop.Value) _cfg.WarnOnDrop.Value = wod;
             bool scu = DrawSwitch(HotbarI18n.T("sw.safe_quick_use"), _cfg.SafeQuickUse.Value);
             if (scu != _cfg.SafeQuickUse.Value) _cfg.SafeQuickUse.Value = scu;
+            bool arl = DrawSwitch(HotbarI18n.T("sw.auto_reload"), _cfg.AutoReload.Value);
+            if (arl != _cfg.AutoReload.Value) _cfg.AutoReload.Value = arl;
             GUILayout.EndVertical();
 
             GUILayout.Space(12f);
@@ -106,8 +215,6 @@ namespace CasualtiesUnknown.Hotbar
             }
             DrawLanguageModeRow(HotbarI18n.T("lbl.language"), _cfg.PreferredLanguage);
             GUILayout.EndVertical();
-
-            CaptureIfNeeded();
         }
 
         private void DrawDirectionRow()

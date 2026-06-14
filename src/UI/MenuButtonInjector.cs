@@ -49,6 +49,7 @@ namespace CasualtiesUnknown.Hotbar
 
         private static void InjectOnce(PreRunScript pre)
         {
+            if (_onClick == null) return;
             if (pre == null || pre.loadButton == null) return;
             var parent = pre.transform;
             for (int i = 0; i < parent.childCount; i++)

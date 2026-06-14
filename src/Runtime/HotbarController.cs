@@ -30,6 +30,14 @@ namespace CasualtiesUnknown.Hotbar
             _model.RefillActiveIfNeeded();
             _model.Refresh();
             _view.Tick();
+            if (_cfg.AutoReload.Value) AutoReload();
+        }
+
+        private void AutoReload()
+        {
+            var cam = PlayerCamera.main;
+            if (cam == null || cam.body == null || !cam.body.conscious) return;
+            AmmoLoader.TryAutoReloadHandGun(cam.body);
         }
 
         private void LateUpdate()
