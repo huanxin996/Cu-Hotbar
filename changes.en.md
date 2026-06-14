@@ -2,11 +2,39 @@
 
 > 中文更新日志：见 [changes.md](changes.md)
 
+## v1.0.7
+
+### Added
+
+- **About tab**: settings panel gains an "About" tab in the SkinSync-style centered layout, listing version / repo / latest release / author / dependencies.
+- **UI language switch**: Settings → "Misc" adds three options (auto / Chinese / English); written to `I18n.PreferredLanguage` in the config file and persisted across restarts.
+- **Auto reload**: on by default (Settings → "Switch Keys" section). When the firearm in your main hand is short of ammo (no magazine / direct-feed magazine not full / racked but chamber empty), the mod scans your inventory for matching `ammoType` and loads one round / magazine; full magazines are preferred. No keypress and no hand swap; if conditions aren't met it stays out of the way.
+
+### Fixed
+
+- **Embedded panel scrolls**: fixed the settings panel being unable to scroll and getting bottom content cut off when embedded in CuSaveManager's sidebar. Pushed `ScrollView` down into the settings content itself, and removed the outer ScrollView from the standalone window so the two paths don't nest.
+
+## v1.0.6
+
+### Changed
+
+- **Resolution-aware scaling**: the settings panel now scales uniformly to the screen resolution so it no longer overflows.
+
+### Fixed
+
+- Fixed the top-right X close icon rendering wrong when the panel is scaled.
+
 ## v1.0.5
 
 ### Fixed
 
 - **No longer steals other IMGUI text focus**: `ImGuiImeRecovery` only clears focus when the settings panel closes, instead of calling `FocusControl(null)` whenever an external TextField (e.g. KrokMP connection form) has keyboard focus; removed the redundant per-frame IME tick from `HotbarController`.
+
+## v1.0.4
+
+### Fixed
+
+- Fixed slot switch keys and the use key stopping after Chinese IME input in CuSaveManager's panel or other IMGUI UIs. Closing the panel clears the stuck IMGUI keyboard focus.
 
 ## v1.0.3
 
